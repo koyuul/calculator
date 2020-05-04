@@ -1,0 +1,45 @@
+body {
+    width: 20%;
+    height: auto;
+    display: grid;
+    grid-template-columns:  1fr .5fr .5fr;
+    grid-template-areas: 
+    "answer answer answer"
+    "nums operations  etc"
+    "equals equals equals";
+}
+
+#answer_box{
+    grid-area: answer;
+}
+
+#numbers {
+    grid-area: nums;
+
+    display: grid;
+    grid-template-areas: 
+    "a a a"
+    "a a a"
+    "a a a";
+}
+
+
+#operations{
+    grid-area: operations;
+    
+    display: grid;
+    grid-template-rows: 1fr 1fr 1fr 1fr;
+
+}
+
+#etc{
+    grid-area: etc;
+    
+    display: grid;
+    grid-template-rows: 1fr 1fr 1fr 1fr;
+
+}
+
+#equals{
+    grid-area: equals;
+}
