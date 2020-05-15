@@ -1,6 +1,7 @@
 const numberButtons = document.querySelectorAll('#numbers input');
 let firstNumber, secondNumber, number=[], currentNumber=0;
 
+//REGISTER BUTTON CLICKS
 numberButtons.forEach(function(button){
     button.addEventListener('click', function(){
         
@@ -24,6 +25,7 @@ numberButtons.forEach(function(button){
     })
 })
 
+//OPERATIONS
 const operationsButtons = document.querySelectorAll('#operations input')
 let operationClicked, displayOperator;
 operationsButtons.forEach(function(button){
@@ -43,6 +45,7 @@ operationsButtons.forEach(function(button){
     });
 })
 
+//EQUALS SIGN
 let answer;
 document.querySelector('#equals').addEventListener('click', function(){
     answer = operate(number[0], number[1], operationClicked)
@@ -75,6 +78,8 @@ function operate(a, b, operator){
     }
 }
 
+
+//UPDATE SCREEN
 const answerText = document.querySelector('#answer_box')
 answerText.value = '';
 const allButtons = document.querySelectorAll('input[type="button"]')

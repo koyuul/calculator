@@ -4,7 +4,54 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>my calculator</title>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            width: 20%;
+            height: auto;
+            display: grid;
+            grid-template-columns:  1fr .5fr .5fr;
+            grid-template-areas: 
+            "answer answer answer"
+            "nums operations  etc"
+            "equals equals equals";
+        }
+
+        #answer_box{
+            grid-area: answer;
+        }
+
+        #numbers {
+            grid-area: nums;
+
+            display: grid;
+            grid-template-areas: 
+            "a a a"
+            "a a a"
+            "a a a";
+        }
+
+
+        #operations{
+            grid-area: operations;
+            
+            display: grid;
+            grid-template-rows: 1fr 1fr 1fr 1fr;
+
+        }
+
+        #etc{
+            grid-area: etc;
+            
+            display: grid;
+            grid-template-rows: 1fr 1fr 1fr 1fr;
+
+        }
+
+        #equals{
+            grid-area: equals;
+        }
+
+    </style>
 </head>
 <body>
     <input type="text" value="" id="answer_box">
@@ -27,8 +74,6 @@
     <input type="button" value="=" id="equals">
 
      <div id = "etc">
-        <input type="button" value="√">
-        <input type="button" value="%">
         <input type="button" value="clear" id="clear">
         <input type="button" value="reset" id="reset">
     </div>
@@ -41,5 +86,130 @@
     </div>
 
 </body>
-<script src="script.js"></script>
+<script >
+
+const numberButtons = document.querySelectorAll('#numbers input');
+let firstNumber, secondNumber, number=[], currentNumber=0;
+//REGISTER BUTTON CLICKS
+numberButtons.forEach(function(button){
+
+    button.addEventListener('click', function(){ //add click event listener for each button
+        
+        if(button.value<10){ // button value is a number
+            if(number[currentNumber]==undefined || number[currentNumber]===answer){
+                number[currentNumber]=button.value;
+            }
+            else number[currentNumber]+=button.value;
+        }
+
+        else if(button.value==='.' && number[currentNumber]!==undefined){//inputs .
+            if(!number[currentNumber].toString().includes('.')){
+                number[currentNumber]+=button.value
+            }
+        }
+
+        else if(button.value==='∓' && number[currentNumber]!==undefined){//inputs -+
+            number[currentNumber]*=-1;
+        }
+
+    })
+
+})
+//OPERATIONS
+const operationsButtons = document.querySelectorAll('#operations input')
+let operationClicked, displayOperator;
+operationsButtons.forEach(function(button){
+    button.addEventListener('click', function(){
+        if (number[0]===undefined && answer!==undefined){//operation to answer
+            operationClicked=button.id;
+            displayOperator=button.value;
+            number[0]=answer;
+            currentNumber=1;
+        }
+        else if (number[0]!==undefined){
+            operationClicked=button.id;
+            displayOperator=button.value;
+            currentNumber=1;
+        }
+    });
+})
+
+//EQUALS SIGN
+let answer;
+document.querySelector('#equals').addEventListener('click', function(){
+    answer = operate(number[0], number[1], operationClicked)
+    number=[answer];
+    currentNumber=0;
+})
+
+
+function operate(a, b, operator){
+    let firstNumber = parseFloat(a);
+    let secondNumber = parseFloat(b);
+    if (isNaN(secondNumber)) return firstNumber;
+    switch(operator){
+        case 'add':
+            return firstNumber+secondNumber;
+        break;
+        
+        case 'subtract':
+            return firstNumber-secondNumber;
+        break;
+
+        case 'multiply':
+            return firstNumber*secondNumber;
+        break;
+
+        case 'divide':
+            return firstNumber/secondNumber;
+        break;
+    }
+}
+
+
+//UPDATE SCREEN
+const answerText = document.querySelector('#answer_box')
+answerText.value = '';
+const allButtons = document.querySelectorAll('input[type="button"]')
+allButtons.forEach(function(button){
+    button.addEventListener('click', function(){
+        if(button.parentElement.id==="numbers" && 
+        (!button.classList.toString().includes("not_really")
+        || number[currentNumber]!==undefined)){
+            (currentNumber===0)
+            ? answerText.value = number[currentNumber] 
+            : answerText.value = `${number[0]} ${displayOperator} ${number[1]}`;
+        
+        }
+        else if (button.parentElement.id==="operations" && number[0]!==undefined){
+            console.log(number[0])
+            answerText.value += ` ${displayOperator}`
+        }
+        else if (button.id==="equals"){
+            answerText.value = parseFloat(answer.toFixed(10));
+        }
+        else if(button.id==="clear"){
+            answerText.value = (currentNumber===0) ? '' : `${number[0]} ${displayOperator}` 
+        }
+        else if(button.id==="reset"){
+            answerText.value = '' 
+        }
+
+    });
+
+});
+
+document.querySelector('#clear').addEventListener('click', function(){
+    if (number[0] === answer) answer=undefined
+    number[currentNumber]=undefined;
+    
+})
+
+document.querySelector('#reset').addEventListener('click', function(){
+    number=[];
+    currentNumber=0;
+    answer=undefined;
+})
+
+</script>
 </html>
